@@ -2,7 +2,7 @@ package com.luizalabs.gamesparser
 
 import com.luizalabs.gamesparser.models.ProcessInitializer
 import com.luizalabs.gamesparser.processors.GamesParserProcessor
-import com.luizalabs.gamesparser.utils.FileUtils
+import com.luizalabs.gamesparser.utils.{ApiUtils, FileUtils}
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
 
@@ -15,7 +15,8 @@ object GamesParserApplication {
         ProcessInitializer(
           createSparkSession(),
           arguments(0),
-          new FileUtils
+          new FileUtils,
+          new ApiUtils
         )
       )
     }

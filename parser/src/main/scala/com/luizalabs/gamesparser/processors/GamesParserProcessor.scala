@@ -2,40 +2,39 @@ package com.luizalabs.gamesparser.processors
 
 import com.luizalabs.gamesparser.constants.Constants._
 import com.luizalabs.gamesparser.models.{Game, GameKill, ProcessInitializer}
-import com.luizalabs.gamesparser.utils.{ApiUtils, FileUtils}
-import org.apache.spark.sql.{Row, SparkSession}
+import org.apache.spark.sql.Row
 
 object GamesParserProcessor {
 
   def process(process: ProcessInitializer) {
     val files = process.fileUtils.getListOfLogFiles(process.dir)
 
-    files.foreach(processFile(_, process.spark, process.fileUtils))
-
-    files.foreach(process.fileUtils.renameFile(_))
+    files.foreach(processFile(_, process))
+    files.foreach(process.fileUtils.renameFile)
   }
 
-  def processFile(file: String, spark: SparkSession, fileUtils: FileUtils): Unit = {
-    fileUtils.readFileToDataframe(file, spark)
+  def processFile(file: String, process: ProcessInitializer): Unit = {
+    process.fileUtils.readFileToDataframe(file, process.spark)
       .collect()
       .map(parseGames)
       .filter(!_.isEmpty)
-      .foreach(saveGame)
+      .foreach(saveGame(_, process))
   }
 
-  private def parseGames(game: Row): Array[String] = {
+  def parseGames(game: Row): Array[String] = {
     game
       .toString
+      .replace("[", "")
       .split("\n")
       .map(line => line.slice(7, line.length()))
       .filter(line => line.startsWith(KILL) || line.startsWith(PLAYER_ENTER_ROOM))
   }
 
-  private def saveGame(game: Array[String]) {
+  def saveGame(game: Array[String], process: ProcessInitializer) {
     val kills = getKills(game)
     val players = getPlayers(game)
 
-    ApiUtils.execute(Game(kills.length, players, getKillers(kills, players)))
+    process.apiUtils.execute(Game(kills.length, players, getKillers(kills, players)))
   }
 
   def getPlayers(game: Array[String]): Array[String] = {
@@ -64,7 +63,7 @@ object GamesParserProcessor {
       val killed = info(1).split(" by ")(0)
 
       if (killer.equals(WORLD_PLAYER)) {
-        val newValue = handleKillByWorldValue(resultMap.apply(killed))
+        val newValue = resultMap.apply(killed) - 1
         resultMap = resultMap + (killed -> newValue)
       } else {
         val newValue = resultMap.apply(killer) + 1
@@ -79,6 +78,6 @@ object GamesParserProcessor {
     result
   }
 
-  def handleKillByWorldValue(value: Int): Int = if (value > 0) value - 1  else 0
+  def handleKillByWorldValue(value: Int): Int = if (value < 0) 0 else value
 
 }

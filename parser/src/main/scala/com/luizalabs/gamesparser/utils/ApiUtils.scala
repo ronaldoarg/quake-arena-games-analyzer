@@ -9,11 +9,11 @@ import org.apache.http.entity.{ContentType, StringEntity}
 import org.apache.http.impl.client.{CloseableHttpClient, HttpClients}
 import org.apache.http.util.EntityUtils
 
-object ApiUtils {
+class ApiUtils {
 
   implicit lazy val httpClient: CloseableHttpClient = HttpClients.createDefault()
 
-  def execute(body: Game): Unit = {
+  def execute(body: Game): Boolean = {
 
       val json = new Gson().toJson(body)
       val entity = new StringEntity(json, ContentType.APPLICATION_JSON)
@@ -29,6 +29,8 @@ object ApiUtils {
       } finally {
         response.close()
       }
+
+      response.getStatusLine.equals(201)
   }
 }
 
