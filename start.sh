@@ -8,7 +8,7 @@ fi
 echo #
 echo ------------ Checking requirements -----------------
 echo #
-echo ----------------- Step 1/5 ------------------------
+echo ----------------- Step 1/6 ------------------------
 echo #
 
 java -version
@@ -26,16 +26,16 @@ echo ----------------------------------------------------
 echo #
 echo ----------------- Building API ---------------------
 echo #
-echo ----------------- step 2/5 ------------------------
+echo ----------------- step 2/6 ------------------------
 echo #
 
-# cd api && mvn clean package
-# cd ..
+cd api && mvn clean package
+cd ..
 
 echo #
 echo ----------------- Executing API ---------------------
 echo #
-echo ----------------- step 3/5 ------------------------
+echo ----------------- step 3/6 ------------------------
 echo #
 
 containers=$(docker ps -q -f ancestor=luizalabs-desafio/api)
@@ -52,7 +52,7 @@ cd ..
 echo #
 echo ------------- Building Parser ---------------------
 echo #
-echo ----------------- step 4/5 -----------------------
+echo ----------------- step 4/6 -----------------------
 echo #
 
 cd parser && mvn clean package
@@ -61,7 +61,24 @@ cd ..
 echo #
 echo ------------- Executing Parser ----------------------
 echo #
-echo ----------------- step 5/5 -----------------------
+echo ----------------- step 5/6 -----------------------
 echo #
 
 java -jar parser/target/games-parser-*.jar $1
+
+echo #
+echo ------------- Executing Web ----------------------
+echo #
+echo ----------------- step 6/6 -----------------------
+echo #
+
+containers=$(docker ps -q -f ancestor=luizalabs-desafio/web)
+
+if [[ ! -z "$containers" ]]; then 
+    docker stop $containers
+fi
+
+cd web
+docker build -f Dockerfile -t luizalabs-desafio/web .
+docker run -p 4200:8080 -d luizalabs-desafio/web
+cd ..
