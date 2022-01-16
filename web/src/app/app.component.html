@@ -1,0 +1,8 @@
+<app-header></app-header>
+
+<div class="container">
+
+  <h1 class="title">Jogos</h1>
+
+  <app-card *ngFor="let game of games$ | async" [game]="game"></app-card>
+</div>
