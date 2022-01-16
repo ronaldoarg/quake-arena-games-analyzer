@@ -6,7 +6,6 @@ import com.luizalabs.api.model.http.request.GameCreateRequest;
 import com.luizalabs.api.model.http.request.GameKillDetails;
 import com.luizalabs.api.model.http.response.GameDetailsResponse;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
