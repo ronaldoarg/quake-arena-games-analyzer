@@ -82,3 +82,7 @@ cd web
 docker build -f Dockerfile -t luizalabs-desafio/web .
 docker run -p 4200:8080 -d luizalabs-desafio/web
 cd ..
+
+echo #
+echo ----------- Finished with success --------------
+echo #

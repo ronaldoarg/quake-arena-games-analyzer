@@ -9,6 +9,7 @@ O projeto executa a api e o front-end em imagens Docker, por isso é necessário
 Resumindo os requisitos:
 * Docker
 * Java 8
+* Scala 2.11.12
 * Maven
 
 Para facilitar a execução do projeto existe um script na raiz do projeto chamado `start.sh` que basta ser executado passando como parâmetro o diretório que contém os arquivos de logs que devem ser executado, como por exemplo:
@@ -22,3 +23,7 @@ Como exemplo existe um arquivo dentro da pastas `/logs` e caso queira usá-lo ba
 Para os arquivos serem logados eles precisam ter a extensão `.log` e o parser renomeia os arquivos logados, fique atento nos arquivos.
 
 Caso queira também é possível rodar cada aplicação individualmente, basta entrar na pasta da aplicação que queira executar. As instruçãoes para isso ainda estão sendo descritas, mas o arquivo `start.sh` é um bom caminho.
+
+## Utilizando o projeto
+
+Após executar todos os projetos a api estará disponível em `localhost:8080` e o web estará disponível em `localhost:4200` 
